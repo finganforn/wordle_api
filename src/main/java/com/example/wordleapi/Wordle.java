@@ -43,7 +43,7 @@ public static ArrayList<String> ordel(String word, ArrayList<Character> allowed,
 		int generated = 0;
 		for (int i = 0; i < allStrings.size() && !timeRanOut; i++) {
 			generated++;
-			if (timePassed(orgTime) > limitSec*1000*0.5)
+			if (timePassed(orgTime) > limitSec*1000*0.95)
 				timeRanOut = true;
 			String s = allStrings.get(i);
 			
@@ -118,16 +118,6 @@ public static ArrayList<String> ordel(String word, ArrayList<Character> allowed,
 			
 		}
 		
-		
-		
-		//System.out.println("current word: " + word);
-		//System.out.println("allowed : " + allowed);
-		//System.out.println("required : " + required);
-		//System.out.println("generated " + generated + ", " + res.size() + " viable ones");		
-		
-		
-		
-		
 		return res;
 	
 	}
@@ -136,7 +126,7 @@ public static ArrayList<String> ordel2(String word, ArrayList<Character> allowed
 	ArrayList<String> res2  = new ArrayList<String>();
 	
 	boolean timeRanOut = false;
-	if (timePassed(orgTime) > limitSec*1000*0.75) {
+	if (timePassed(orgTime) > limitSec*1000*0.85) {
 		timeRanOut = true;
 		return res;
 	}
@@ -144,7 +134,7 @@ public static ArrayList<String> ordel2(String word, ArrayList<Character> allowed
 	for (int i = 0; i < word.length() && !timeRanOut; i++) {
 		if (word.charAt(i) == ' ')
 			empty++;
-		if (timePassed(orgTime) > limitSec*1000*0.75)
+		if (timePassed(orgTime) > limitSec*1000*0.85)
 			timeRanOut = true;
 	}
 	

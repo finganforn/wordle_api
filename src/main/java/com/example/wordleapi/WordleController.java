@@ -17,17 +17,9 @@ public class WordleController {
     private final Wordle solver;
 	private final WordService wordService;
 	
-	//private List<List<String>> englishWords;
-	//private List<List<String>> swedishWords;
-
     public WordleController(Wordle solver, WordService wordService) {
         this.solver = solver;
-		this.wordService = wordService;
-		//WordCollector wc = new WordCollector();
-		//List<List<String>> englishWords = wc.groupWordsByLength("english-words.txt");
-		//List<List<String>> swedishWords = wc.groupWordsByLength("svenska-ord.txt");
-		//System.out.println("example word + " + englishWords.get(2).get(2));
-		//System.out.println("exempelord + " + swedishWords.get(3).get(3));
+	this.wordService = wordService;
     }
 
     @PostMapping("/solve")
@@ -40,9 +32,6 @@ public class WordleController {
 		int limitSec = request.maxSeconds();	
 	
 		String word = request.currentWord().toLowerCase();
-		//List<Character> required = request.requiredLetters();
-		//List<Integer> wrongPos = request.requiredLetterWrongIndices();
-		//List<Character> allowed = request.allowedLetters();
 		
 		ArrayList<Character> required = new ArrayList<>(request.requiredLetters());
 		ArrayList<Integer> wrongPos = new ArrayList<>(request.requiredLetterWrongIndices());
@@ -109,7 +98,7 @@ public class WordleController {
 	
 	@GetMapping("/test")
 	public String test() {
-		return "English words loaded: " + 
+		return "API version 0.11, English words loaded: " + 
                wordService.getEnglishWords().size() + 
 			   "\nSwedish words loaded: " +
 			   wordService.getSwedishWords().size();
