@@ -2,6 +2,8 @@ package com.example.wordleapi;
 
 import java.time.LocalTime;
 import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
 
 import org.springframework.stereotype.Service;
 
@@ -378,5 +380,18 @@ public static ArrayList<String> ordel2(String word, ArrayList<Character> allowed
 			}
 		 return false;
 	 }
+	 private static int countUniqueLetters(String word) {
+	    return (int) word.chars().distinct().count();
+	 }
+	 public static List<String> removeDuplicates(List<String> words) {
+		    return words.stream().distinct().toList();
+	 }
+
+		public static List<String> sortByUniqueLetters(List<String> words) {
+		    return words.stream()
+		    .sorted(Comparator.comparingInt(Wordle::countUniqueLetters).reversed())
+		    .toList();
+		}
+	 
 	
 }

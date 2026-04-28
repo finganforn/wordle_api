@@ -66,13 +66,16 @@ public class WordleController {
 		//	ordelRes.add(0, "TIME EXPIRED, INCOMPLETE LIST");
 		
 		List<String> items = wordService.filterValidWords(ordelRes, request.lang());
-		int size = items.size();
 		
+		int size = items.size();
 		System.out.println(size + " filtered words, at " + Wordle.timePassed(now) + "ms");
+		List<String> betterResults = Wordle.sortByUniqueLetters(Wordle.removeDuplicates(items));
+		size = betterResults.size();
+		System.out.println(size + " unduped and sorted words, at " + Wordle.timePassed(now) + "ms");
 
 	        if (size <= 10) {
         	    // Just print everything
-	            for (String s : items) {
+	            for (String s : betterResults) {
 	                System.out.print(s + " ");
 	            }
 	        }
@@ -82,14 +85,16 @@ public class WordleController {
 		    if (step == 0) step = 1; // safety, though size > 10 makes this unlikely
 
 		    for (int i = 0; i < size; i += step) {
-	       	    System.out.print(items.get(i) + " ");
+	       	    System.out.print(betterResults.get(i) + " ");
 	       	    }
 		}
 		System.out.println();
 		
 		
 
-		return new SolveResponse(items, timedOut); //line50
+		
+		
+		return new SolveResponse(betterResults, timedOut); //line50
 				
 		
 		/*
