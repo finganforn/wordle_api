@@ -25,11 +25,12 @@ public class WordleController {
     @PostMapping("/solve")
     public SolveResponse solve(@RequestBody SolveRequest request) {
 
-	        System.out.println(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
+	    System.out.println(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
 
 		
 		LocalTime now = LocalTime.now();
 		int limitSec = request.maxSeconds();	
+		boolean timedOut = false;
 	
 		String word = request.currentWord().toLowerCase();
 		
@@ -46,17 +47,27 @@ public class WordleController {
 		System.out.println("");
 
 		ArrayList<String> ordelRes = new ArrayList<String>();
-		ArrayList<String> yellowGens = Wordle.generateQueryWords(word, required, wrongPos, now, (int) (limitSec*0.75)); //line42
-		if (yellowGens.get(yellowGens.size()-1).equals("")) {
-			System.out.println("generator1 timed out");
-			yellowGens.remove(yellowGens.size()-1);
+		ArrayList<String> yellowGens = Wordle.generateQueryWords(word, required, wrongPos, now, (int) (limitSec*0.65)); //line42
+		
+		if (Wordle.incomplete(yellowGens)) {
+			System.out.println("yellowGens timed out at " + Wordle.timePassed(now) + "ms");
+			timedOut = true;
 		}
 		for (String s2 : yellowGens)
 			ordelRes.addAll(Wordle.ordel(s2, allowed, required, wrongPos, now, limitSec)); //line48
 		System.out.println("generating " + ordelRes.size() + " words took " + Wordle.timePassed(now) + "ms");
-
+		
+		if (Wordle.incomplete(ordelRes)) {
+			System.out.println("ordelFunc timed out");
+			timedOut = true;
+		}
+		
+		//if (timeRanOut)
+		//	ordelRes.add(0, "TIME EXPIRED, INCOMPLETE LIST");
+		
 		List<String> items = wordService.filterValidWords(ordelRes, request.lang());
 		int size = items.size();
+		
 		System.out.println(size + " filtered words, at " + Wordle.timePassed(now) + "ms");
 
 	        if (size <= 10) {
@@ -75,7 +86,10 @@ public class WordleController {
 	       	    }
 		}
 		System.out.println();
-		return new SolveResponse(items); //line50
+		
+		
+
+		return new SolveResponse(items, timedOut); //line50
 				
 		
 		/*

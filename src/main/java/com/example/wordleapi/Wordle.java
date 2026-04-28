@@ -2,8 +2,6 @@ package com.example.wordleapi;
 
 import java.time.LocalTime;
 import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
 
 import org.springframework.stereotype.Service;
 
@@ -31,10 +29,16 @@ public static ArrayList<String> ordel(String word, ArrayList<Character> allowed,
 		ArrayList<String> res = new ArrayList<String>();
 		
 		
-		
+
 		
 		
 		ArrayList<String> allStrings0 = ordel2(word, allowed, orgTime, limitSec);
+		
+		if (!allStrings0.isEmpty() && "x".equals(allStrings0.get(allStrings0.size() - 1))) {
+			allStrings0.remove(allStrings0.size() - 1);
+		    timeRanOut = true;
+		}
+		
 		ArrayList<String> allStrings = new ArrayList<String>();
 		
 			allStrings = allStrings0;
@@ -43,7 +47,7 @@ public static ArrayList<String> ordel(String word, ArrayList<Character> allowed,
 		int generated = 0;
 		for (int i = 0; i < allStrings.size() && !timeRanOut; i++) {
 			generated++;
-			if (timePassed(orgTime) > limitSec*1000*0.95)
+			if (timePassed(orgTime) > limitSec)
 				timeRanOut = true;
 			String s = allStrings.get(i);
 			
@@ -118,6 +122,9 @@ public static ArrayList<String> ordel(String word, ArrayList<Character> allowed,
 			
 		}
 		
+		if (timeRanOut) {
+			res.add("x");
+		}
 		return res;
 	
 	}
@@ -126,7 +133,7 @@ public static ArrayList<String> ordel2(String word, ArrayList<Character> allowed
 	ArrayList<String> res2  = new ArrayList<String>();
 	
 	boolean timeRanOut = false;
-	if (timePassed(orgTime) > limitSec*1000*0.85) {
+	if (timePassed(orgTime) > limitSec*0.85) {
 		timeRanOut = true;
 		return res;
 	}
@@ -134,7 +141,7 @@ public static ArrayList<String> ordel2(String word, ArrayList<Character> allowed
 	for (int i = 0; i < word.length() && !timeRanOut; i++) {
 		if (word.charAt(i) == ' ')
 			empty++;
-		if (timePassed(orgTime) > limitSec*1000*0.85)
+		if (timePassed(orgTime) > limitSec*0.85)
 			timeRanOut = true;
 	}
 	
@@ -192,6 +199,8 @@ public static ArrayList<String> ordel2(String word, ArrayList<Character> allowed
 		}
 	}
 	
+	if (timeRanOut)
+		res.add("x");
 	return res;
 	}
 
@@ -310,7 +319,9 @@ public static ArrayList<String> ordel2(String word, ArrayList<Character> allowed
 						res.get(res.size()-1).add(s2);
 					int timeP1 = timePassed(orgTime);
 					//System.out.println("stamp9 " + timePassed(orgTime) + "ms");
-					if (timeP1/1000 > limitSec*0.75)
+					
+					if (timeP1 > limitSec)
+					//if (timeP1 > limitSec*0.65*1000)
 					{
 						//System.out.println("stamp10!!!! " + timePassed(orgTime) + "ms");
 						ranOutOfTime = true;
@@ -332,8 +343,8 @@ public static ArrayList<String> ordel2(String word, ArrayList<Character> allowed
 			remainingWrongs.remove(0);
 			//System.out.println("stamp13 " + timePassed(orgTime) + "ms");
 			remainingWrongPos.remove(0);
-			int timeP = timePassed(orgTime)/1000;
-			if (timeP/1000 > limitSec) {
+			int timeP = timePassed(orgTime);
+			if (timeP > limitSec) {
 				ranOutOfTime = true;
 				//System.out.println("stamp14 " + timePassed(orgTime) + "ms");
 			}
@@ -342,7 +353,7 @@ public static ArrayList<String> ordel2(String word, ArrayList<Character> allowed
 			//pick one of the wrongpos
 		//System.out.println("yellowGens done at " + timePassed(orgTime) + "ms");
 		if (ranOutOfTime)
-			res.get(res.size()-1).add("");
+			res.get(res.size()-1).add("x");
 		return res.get(res.size()-1);
 	 }
 	 public static int timePassed(LocalTime orgTime) {
@@ -358,6 +369,14 @@ public static ArrayList<String> ordel2(String word, ArrayList<Character> allowed
 		 }
 		 
 		 return mils;
+	 }
+	 public static boolean incomplete(ArrayList<String> l) {
+		 if (!l.isEmpty() && l.get(l.size()-1).equals("x")) {
+				
+			 l.remove(l.size()-1);
+				return true;
+			}
+		 return false;
 	 }
 	
 }
