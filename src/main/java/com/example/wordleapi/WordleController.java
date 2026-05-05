@@ -94,7 +94,7 @@ public class WordleController {
 
 		
 		
-		return new SolveResponse(betterResults, timedOut); //line50
+		return new SolveResponse(betterResults, timedOut, Wordle.timePassed(now)); //line50
 				
 		
 		/*
