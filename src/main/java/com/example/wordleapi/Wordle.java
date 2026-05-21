@@ -51,6 +51,10 @@ public static ArrayList<String> ordel(String word, ArrayList<Character> allowed,
 			generated++;
 			if (timePassed(orgTime) > limitSec)
 				timeRanOut = true;
+			if (memoryUsage() > 0.85) {
+				timeRanOut = true;
+				System.out.println("ordel func RAM USAGE TOO HIGH");
+			}
 			String s = allStrings.get(i);
 			
 			
@@ -145,6 +149,10 @@ public static ArrayList<String> ordel2(String word, ArrayList<Character> allowed
 			empty++;
 		if (timePassed(orgTime) > limitSec*0.85)
 			timeRanOut = true;
+		if (memoryUsage() > 0.85) {
+			timeRanOut = true;
+			System.out.println("ordel2 RAM USAGE TOO HIGH");
+		}
 	}
 	
 	
@@ -288,6 +296,13 @@ public static ArrayList<String> ordel2(String word, ArrayList<Character> allowed
 		 //System.out.println("stamp1 " + timePassed(orgTime) + "ms");
 		 
 		 while (remainingWrongs.size() > 0 && !ranOutOfTime) {
+			 
+			if (memoryUsage() > 0.85) {
+				ranOutOfTime = true;
+				System.out.println("generate yellows RAM USAGE TOO HIGH");
+			}
+			 
+			
 			ArrayList<String> thisGen = new ArrayList<String>();
 			res.add(new ArrayList<String>());
 			//System.out.println("stamp2 " + timePassed(orgTime) + "ms");
@@ -387,11 +402,20 @@ public static ArrayList<String> ordel2(String word, ArrayList<Character> allowed
 		    return words.stream().distinct().toList();
 	 }
 
-		public static List<String> sortByUniqueLetters(List<String> words) {
-		    return words.stream()
-		    .sorted(Comparator.comparingInt(Wordle::countUniqueLetters).reversed())
-		    .toList();
-		}
+	public static List<String> sortByUniqueLetters(List<String> words) {
+	    return words.stream()
+	    .sorted(Comparator.comparingInt(Wordle::countUniqueLetters).reversed())
+	    .toList();
+	}
+	public static double memoryUsage() {
+		Runtime runtime = Runtime.getRuntime();
+		long usedMemory =
+		    runtime.totalMemory() - runtime.freeMemory();
+		long maxMemory = runtime.maxMemory();
+		double usage =
+		    (double) usedMemory / maxMemory;
+		return usage;
+	}
 	 
 	
 }
